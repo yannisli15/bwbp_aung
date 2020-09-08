@@ -1,5 +1,5 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, {useState} from 'react';
+import { View, ScrollView } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { GlobalContext } from '@components/ContextProvider';
 import { BaseScreen } from '../BaseScreen/BaseScreen';
@@ -25,6 +25,7 @@ interface Availability {
 interface JobsScreenState {
   title: string;
   jobs: JobRecord[];
+  visible: boolean;
   refreshing: boolean;
   staticHeader: boolean;
   status: Status;
@@ -45,6 +46,7 @@ interface JobsScreenProps {
  * - Compontent Library: https://react-native-elements.github.io/react-native-elements/docs/button.html
  *
  */
+
 export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState> {
   static contextType = GlobalContext;
 
@@ -54,6 +56,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     this.state = {
       title: 'Jobs',
       jobs: [],
+      visible: false,
       refreshing: true,
       staticHeader: false,
       status: Status.none,
@@ -65,6 +68,10 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
         friday: false,
       },
     };
+  }
+
+  toggleOverlay = () => {
+    this.setState({visible: !this.state.visible})
   }
 
   componentDidMount(): void {
@@ -103,12 +110,14 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
   filterJobs = (jobs: JobRecord[], availability: Availability): void => {
     // Step 0: Clone the jobs input
     const newJobs: JobRecord[] = cloneDeep(jobs);
-    console.log(newJobs, availability);
 
     // Step 1: Remove jobs where the schedule doesn't align with the users' availability.
+    let nonAvailable = Object.entries(availability).filter(a => a[1] === false).map(x => x[0])
+    let filteredJobs = newJobs.filter(newJob => !nonAvailable.some(r => newJob.schedule.map(a=> a.toLowerCase()).includes(r)))
 
     // Step 2: Save into state
-    this.setState({ jobs: newJobs });
+    this.setState({ jobs: filteredJobs });
+    this.toggleOverlay()
   };
 
   getStatus = (jobs: JobRecord[]): Status => {
@@ -126,7 +135,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
   };
 
   renderCards(): React.ReactElement {
-    return <>{this.state.jobs.map((record, index) => this.createJobCard(record, index))}</>;
+    return <ScrollView>{this.state.jobs.map((record, index) => this.createJobCard(record, index))}</ScrollView>;
   }
 
   render() {
@@ -201,7 +210,9 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
             }}
           />
         </View>
-        <StatusController defaultChild={this.renderCards()} status={this.state.status} />
+        <Overlay isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
+          <StatusController defaultChild={this.renderCards()} status={this.state.status} />
+        </Overlay>
       </BaseScreen>
     );
   }

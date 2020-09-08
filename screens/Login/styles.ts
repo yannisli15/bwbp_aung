@@ -6,11 +6,11 @@ const win = Dimensions.get('window');
 
 export const ImageContainer = styled.View`
   align-items: center;
-  flex: 0.95;
+  flex: 0.92;
 `;
 
 export const LoginImg = styled.Image`
-  width: ${win.height * 1.4};
+  width: ${win.height * 0.5};
   height: null;
   aspect-ratio: 1;
 `;
