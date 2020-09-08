@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { GlobalContext } from '@components/ContextProvider';
