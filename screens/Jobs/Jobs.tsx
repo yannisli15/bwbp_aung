@@ -135,7 +135,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
   };
 
   renderCards(): React.ReactElement {
-    return <ScrollView>{this.state.jobs.map((record, index) => this.createJobCard(record, index))}</ScrollView>;
+    return <>{this.state.jobs.map((record, index) => this.createJobCard(record, index))}</>;
   }
 
   render() {
@@ -154,8 +154,14 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
           />
         }
       >
-        <View>
+        <Overlay 
+          overlayStyle={{height:"45%"}} 
+          isVisible={this.state.visible} 
+          onBackdropPress={this.toggleOverlay}
+          >
+          <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <CheckBox
+            containerStyle={{ width: '90%' }}
             title="Monday"
             checked={monday}
             onPress={() =>
@@ -165,6 +171,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
             }
           />
           <CheckBox
+            containerStyle={{ width: '90%' }}
             title="Tuesday"
             checked={tuesday}
             onPress={() =>
@@ -174,6 +181,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
             }
           />
           <CheckBox
+            containerStyle={{ width: '90%' }}
             title="Wednesday"
             checked={wednesday}
             onPress={(): void =>
@@ -183,6 +191,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
             }
           />
           <CheckBox
+            containerStyle={{ width: '90%' }}
             title="Thursday"
             checked={thursday}
             onPress={(): void =>
@@ -192,6 +201,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
             }
           />
           <CheckBox
+            containerStyle={{ width: '90%' }}
             title="Friday"
             checked={friday}
             onPress={(): void =>
@@ -200,19 +210,25 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
               })
             }
           />
-        </View>
-        <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <Button
-            title="Filter Search"
-            containerStyle={{ width: '50%' }}
+            title="Search"
+            containerStyle={{ width: '50%', marginTop: "5%"}}
             onPress={(): void => {
               this.filterJobs(getJobs(), this.state.availability);
             }}
           />
         </View>
-        <Overlay isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
-          <StatusController defaultChild={this.renderCards()} status={this.state.status} />
         </Overlay>
+        <View style={{ alignItems: 'center', marginVertical: 20 }}>
+          <Button
+            title="Filter Search"
+            containerStyle={{ width: '50%' }}
+            onPress={(): void => this.setState({
+              visible : !this.state.visible
+            })}
+          />
+        </View>
+        <StatusController defaultChild={this.renderCards()} status={this.state.status} />
       </BaseScreen>
     );
   }
