@@ -102,7 +102,7 @@ export class JobCard extends React.Component<CardProps, CardState> {
     const scheduleShow: string = schedule ? schedule.join(', ') : '--';
     const timeOfDayShow: string = timeOfDay ? timeOfDay.join(', ') : '--';
     const cardColor: string = this.state.submitted ? Colors.brandGray : Colors.brandOlive;
-
+    
     return (
       <BaseComponents.Container borderTop cardColor={cardColor}>
         <Styles.Info>{jobName}</Styles.Info>
